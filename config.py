@@ -6,3 +6,5 @@ client = MongoClient("mongodb+srv://admin:admin123@cluster0.gtldf.mongodb.net/?r
 db = client.user_db
 
 user_collection = db["user_data"]
+
+notes_collection = db["notes_data"]

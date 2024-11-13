@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import FastAPI, HTTPException, status
 from config import user_collection
 from .models import RegisterUser, LoginUser
 from .utils import hash_password, verify_password
+from bson import ObjectId
 
-user_routes = APIRouter()
+user_routes = FastAPI()
 
 @user_routes.get("/")
 def greet():
@@ -54,3 +55,10 @@ def login_user(data: LoginUser):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Unexpected error occurred: {e}"
         )
+    
+@user_routes.get("/users")
+def get_users(user_id: str):
+    user = user_collection.find_one({"_id": ObjectId(user_id)})
+    if user:
+        return {"status": "User found", "user_id": user_id}
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
